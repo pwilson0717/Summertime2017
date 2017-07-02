@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load staticfiles %}
+        <title>Pokes</title>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message|safe}}</p>
+            {% endfor %}
+        {% endif %}
+        <div>
+            <a href="{% url 'auth:logout' %}">Logout</a>
+        </div>
+        <div>
+            <h1>Welcome, {{user.alias}}!</h1>
+            
+            <p>{{ pokening.names.count|default:"Now" }} look who poked you!</p>
+            <div>
+                {% for p in pokers %}
+                    <p>{{ p.0.alias }} poked you {{ p.1 }} time(s).</p>
+                {% endfor %}
+            </div>
+        </div>
+        <hr>
+        <div>
+            <table>
+                <caption>Wanna poke them?.</caption>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Alias
+                    </th>
+                    <th>
+                        Email Address
+                    </th>
+                    <th>
+                        Poke History
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                {% for u in users %}
+                    {% if u.id != user.id %}
+                        <tr>
+                            <td>{{u.name}}</td>
+                            <td>{{u.alias}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.gotPoked.count}} pokes.</td>
+                            <td>
+                                <form action="{% url 'pb:poke' %}" method="POST">
+                                    {% csrf_token %}
+                                    <button name="submit" type="submit" value="{{u.id}}">Poke!</button>
+                                </form>
+                            </td>
+                        
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+        </div>
+    </body>
+</html>
